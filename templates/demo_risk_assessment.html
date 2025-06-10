@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - Andre Kuzma</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>{{.PageTitle}}</h1>
+        <p>This is a live demo of the data re-identification risk assessment tool.</p>
+        <textarea id="dataInput" rows="10" cols="50" placeholder="Enter data for risk assessment (e.g., JSON)..."></textarea><br>
+        <button onclick="assessRisk()">Assess Risk</button>
+        <pre id="riskOutput"></pre>
+        <script>
+            async function assessRisk() {
+                const data = document.getElementById('dataInput').value;
+                document.getElementById('riskOutput').textContent = 'Assessing risk...';
+                try {
+                    // THIS IS AN EXAMPLE URL - IT WILL NEED TO BE CHANGED TO YOUR DEPLOYED MICROSERVICE!
+                    const response = await fetch('http://localhost:8084/api/assess-reid-risk', { // Example port 8084
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: data, // Assumes JSON input
+                    });
+                    const result = await response.json();
+                    document.getElementById('riskOutput').textContent = JSON.stringify(result, null, 2);
+                } catch (error) {
+                    document.getElementById('riskOutput').textContent = 'Error assessing risk: ' + error.message;
+                }
+            }
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2025 Andre Kuzma. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

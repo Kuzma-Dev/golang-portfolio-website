@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - Andre Kuzma</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>{{.PageTitle}}</h1>
+        <p>This is a live demo of the PII/SPI data discovery and cataloging tool. Here, JavaScript will call your GoLang microservice.</p>
+        <textarea id="piiInput" rows="10" cols="50" placeholder="Enter text for analysis..."></textarea><br>
+        <button onclick="scanPII()">Analyze PII</button>
+        <pre id="piiOutput"></pre>
+        <script>
+            async function scanPII() {
+                const text = document.getElementById('piiInput').value;
+                document.getElementById('piiOutput').textContent = 'Analysis in progress...';
+                try {
+                    // THIS IS AN EXAMPLE URL - IT WILL NEED TO BE CHANGED TO YOUR DEPLOYED MICROSERVICE!
+                    const response = await fetch('http://localhost:8081/api/scan-pii', { // Example port 8081
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ text: text }),
+                    });
+                    const data = await response.json();
+                    document.getElementById('piiOutput').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    document.getElementById('piiOutput').textContent = 'Error during analysis: ' + error.message;
+                }
+            }
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2025 Andre Kuzma. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

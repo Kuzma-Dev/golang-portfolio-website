@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - Andre Kuzma</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>{{.PageTitle}}</h1>
+        <p>This is a live demo of the GDPR consent management tool.</p>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" value="user123"><br><br>
+        <label for="purpose">Consent Purpose (e.g., marketing):</label>
+        <input type="text" id="purpose" value="marketing"><br><br>
+        <label for="granted">Consent Granted:</label>
+        <input type="checkbox" id="granted" checked><br><br>
+        <button onclick="recordConsent()">Record Consent</button>
+        <button onclick="getConsents()">Get Consents</button>
+        <pre id="consentOutput"></pre>
+        <script>
+            async function recordConsent() {
+                const userId = document.getElementById('userId').value;
+                const purpose = document.getElementById('purpose').value;
+                const granted = document.getElementById('granted').checked;
+                document.getElementById('consentOutput').textContent = 'Recording consent...';
+
+                try {
+                    // THIS IS AN EXAMPLE URL - IT WILL NEED TO BE CHANGED TO YOUR DEPLOYED MICROSERVICE!
+                    const response = await fetch('http://localhost:8083/api/consent', { // Example port 8083
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, purpose, granted }),
+                    });
+                    const data = await response.json();
+                    document.getElementById('consentOutput').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    document.getElementById('consentOutput').textContent = 'Error recording consent: ' + error.message;
+                }
+            }
+
+            async function getConsents() {
+                const userId = document.getElementById('userId').value;
+                document.getElementById('consentOutput').textContent = 'Getting consents...';
+
+                try {
+                    // THIS IS AN EXAMPLE URL - IT WILL NEED TO BE CHANGED TO YOUR DEPLOYED MICROSERVICE!
+                    const response = await fetch(`http://localhost:8083/api/consent?userId=${userId}`);
+                    const data = await response.json();
+                    document.getElementById('consentOutput').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    document.getElementById('consentOutput').textContent = 'Error getting consents: ' + error.message;
+                }
+            }
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2025 Andre Kuzma. All rights reserved.</p>
+    </footer>
+</body>
+</html> 

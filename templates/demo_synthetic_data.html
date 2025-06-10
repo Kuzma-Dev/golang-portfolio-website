@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - Andre Kuzma</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>{{.PageTitle}}</h1>
+        <p>This is a live demo of the synthetic data generator.</p>
+        <button onclick="generateData()">Generate Data</button>
+        <pre id="generatedOutput"></pre>
+        <script>
+            async function generateData() {
+                document.getElementById('generatedOutput').textContent = 'Generating...';
+                try {
+                    // THIS IS AN EXAMPLE URL - IT WILL NEED TO BE CHANGED TO YOUR DEPLOYED MICROSERVICE!
+                    const response = await fetch('http://localhost:8082/api/generate-synthetic-data', { // Example port 8082
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ count: 5 }), // Request for 5 records
+                    });
+                    const data = await response.json();
+                    document.getElementById('generatedOutput').textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    document.getElementById('generatedOutput').textContent = 'Error during generation: ' + error.message;
+                }
+            }
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2025 Andre Kuzma. All rights reserved.</p>
+    </footer>
+</body>
+</html> 
